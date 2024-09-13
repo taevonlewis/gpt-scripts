@@ -36,6 +36,12 @@ algorithms = [
 
 difficulty_levels = ['easy', 'medium', 'hard']
 
+def clean_terminal_output(problem_text):
+    """Cleans up problem text for terminal display by removing markdown formatting."""
+    # Remove Markdown-specific syntax such as ```swift and math notations
+    clean_text = problem_text.replace('```swift', '').replace('```', '').replace('\\(', '').replace('\\)', '')
+    return clean_text
+
 def save_problem_to_file(problem, problem_type, part_type, complexity):
     """Saves the generated problem to a markdown (.md) file."""
     file_name = f"generated_problem_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
@@ -125,7 +131,8 @@ def generate_new_problem(manual_difficulty=None):
         current_part = 1
         prompt = f"Please create the first part of a real-world {part_type} {current_level} problem focused on accessibility challenges in iOS applications. The problem should use or require {random.choice(data_structures)} and/or {random.choice(algorithms)} to solve a challenge related to accessibility. The problem should use Swift syntax and should not include a solution nor what data structure and/or algorithm to use since the interviewee has to infer on what to use."
         problem = generate_problem(prompt)
-        print(f"\nGenerated Problem (Complexity: {current_level}):\n{problem}\n")
+        clean_problem = clean_terminal_output(problem)
+        print(f"\nGenerated Problem (Complexity: {current_level}):\n{clean_problem}\n")
         save_problem(problem, current_level, part_type, part_type)
         save_problem_to_file(problem, current_level, part_type, current_level)
         save_progress(current_level, part_type, part_type, current_part, problem_statement=problem)
@@ -133,7 +140,8 @@ def generate_new_problem(manual_difficulty=None):
     else:
         prompt = f"Please create a real-world {part_type} {current_level} problem focused on accessibility challenges in iOS applications. The problem should use or require {random.choice(data_structures)} and/or {random.choice(algorithms)} to solve a challenge related to accessibility. The problem should use Swift syntax and should not include a solution nor what data structure and/or algorithm to use since the interviewee has to infer on what to use."
         problem = generate_problem(prompt)
-        print(f"\nGenerated Problem (Complexity: {current_level}):\n{problem}\n")
+        clean_problem = clean_terminal_output(problem)
+        print(f"\nGenerated Problem (Complexity: {current_level}):\n{clean_problem}\n")
         save_problem(problem, current_level, part_type, part_type)
         save_problem_to_file(problem, current_level, part_type, current_level)
 
@@ -167,7 +175,8 @@ def generate_next_part():
 
     prompt = f"Please create part {current_part} of a real-world {part_type} problem focused on {problem_type} challenges using data structures and algorithms related to accessibility in iOS applications. The problem should use Swift syntax and should not include a solution nor what data structure and/or algorithm to use since the interviewee has to infer on what to use."
     problem = generate_problem(prompt)
-    print(f"\nNext Part of the Problem:\n{problem}\n")
+    clean_problem = clean_terminal_output(problem)
+    print(f"\nNext Part of the Problem:\n{clean_problem}\n")
 
     save_problem(problem, problem_type, part_type, part_type)
     save_progress(problem_type, part_type, part_type, current_part, problem_statement=problem)
