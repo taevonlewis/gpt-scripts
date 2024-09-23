@@ -1,22 +1,46 @@
-public func adjustFontSize(_ buttons: [(String, Float)], _ targetFontSize: Float) -> String? {
+import Foundation
+
+public func adjustFontSize(_ buttons: [(title: String, fontSize: Float)], _ targetFontSize: Float) -> String? {
     let dynamicTypeFontSizes: [Float] = [11.0, 13.0, 15.0, 17.0, 20.0, 24.0, 28.0, 34.0, 40.0, 46.0, 52.0]
-    var closestFontSize: Float? = nil
-
-    for size in dynamicTypeFontSizes {
-        if size >= targetFontSize {
-            closestFontSize = size
-            break
-        }
-    }
-
-    var matchingTitle: String? = nil
-
+    
+    let adjustedTargetFontSize = findClosest(in: dynamicTypeFontSizes, to: targetFontSize)
+    
+    var closestButtonTitle: String? = nil
+    var minDifference = Float.greatestFiniteMagnitude
+    
     for button in buttons {
-        if closestFontSize == button.1 {
-            matchingTitle = button.0
-            break
+        let diff = abs(button.fontSize - adjustedTargetFontSize)
+        if diff < minDifference {
+            minDifference = diff
+            closestButtonTitle = button.title
         }
     }
+    
+    return closestButtonTitle
+}
 
-    return matchingTitle
+func findClosest(in array: [Float], to target: Float) -> Float {
+    var left = 0
+    var right = array.count - 1
+    
+    while left <= right {
+        let mid = left + (right - left) / 2
+        if array[mid] == target {
+            return array[mid]
+        } else if array[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid - 1
+        }
+    }
+    
+    if left == 0 {
+        return array[0]
+    } else if left == array.count {
+        return array[array.count - 1]
+    } else {
+        let before = array[left - 1]
+        let after = array[left]
+        return abs(before - target) <= abs(after - target) ? before : after
+    }
 }
