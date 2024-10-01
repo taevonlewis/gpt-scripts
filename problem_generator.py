@@ -21,13 +21,13 @@ for filename in [HISTORY_FILE, PROGRESS_FILE]:
             json.dump([] if filename == HISTORY_FILE else {}, f)
 
 DATA_STRUCTURES = [
-    'Arrays & Hashing', 'Two Pointers', 'Sliding Window', 'Stack', 'Binary Search',
+    'Sliding Window', 'Arrays & Hashing', 'Two Pointers', 'Sliding Window', 'Stack', 'Binary Search',
     'Linked List', 'Trees', 'Heap/Priority Queue', 'Tries', 'Graphs', 'Advanced Graphs'
 ]
-
+    
 ALGORITHMS = [
-    'Recursion', 'Dynamic Programming', 'Backtracking', 'Sorting', 'Searching',
-    'Greedy', 'Intervals', 'Math & Geometry', 'Bit Manipulation'
+    'Searching', 'Greedy', 'Dynamic Programming', 'Recursion', 'Backtracking', 'Sorting',
+    'Intervals', 'Math & Geometry', 'Bit Manipulation'
 ]
 
 DIFFICULTY_LEVELS = ['Easy', 'Medium', 'Hard']
@@ -64,26 +64,43 @@ class ProblemGenerator:
     def generate_problem_prompt(self, part='single', style='leetcode', difficulty='Easy', part_number=1):
         data_structure = random.choice(DATA_STRUCTURES)
         algorithm = random.choice(ALGORITHMS)
-        base_prompt = (
-            f"Create a {difficulty} {style} {part}-part problem focusing on iOS accessibility. "
+        # accessibility_base_prompt = (
+        #     f"Create a {difficulty} {style} {part}-part problem focusing on iOS accessibility. "
+        #     f"The problem should involve {data_structure} and {algorithm}, and be relevant to real-world scenarios. "
+        #     f"Use Swift syntax and do not provide a solution."
+        # )
+        ui_base_prompt = (
+            f"Create a {difficulty} {style} {part}-part problem focusing on iOS user interface. "
             f"The problem should involve {data_structure} and {algorithm}, and be relevant to real-world scenarios. "
             f"Use Swift syntax and do not provide a solution."
+            f"Do not provide hints or any detail of what data structure or algorithm to use to solve the problem."
         )
         if part == 'multi' and part_number > 1:
-            base_prompt += f" This is part {part_number} of the problem, building upon the previous parts."
-        return base_prompt
+            ui_base_prompt += f" This is part {part_number} of the problem, building upon the previous parts."
+        return ui_base_prompt
     
     def call_openai_api(self, prompt):
         try:
             response = client.chat.completions.create(
                 model="gpt-4o",
+                # accessibility_messages=[
+                #     {"role": "system", "content": (
+                #         "You are an expert in Apple iOS accessibility engineering. "
+                #         "Create real-world technical interview problems covering all aspects of accessibility, "
+                #         "including VoiceOver, Dynamic Type, color contrast, haptics, gestures, keyboard navigation, "
+                #         "and other assistive technologies. Use Swift syntax and do not include a solution."
+                #         "**Format the problem description in markdown, following LeetCode's style, including code blocks for code snippets and proper headings.**"
+                #     )},
+                #     {"role": "user", "content": prompt}
+                # ],
                 messages=[
                     {"role": "system", "content": (
-                        "You are an expert in Apple iOS accessibility engineering. "
-                        "Create real-world technical interview problems covering all aspects of accessibility, "
-                        "including VoiceOver, Dynamic Type, color contrast, haptics, gestures, keyboard navigation, "
-                        "and other assistive technologies. Use Swift syntax and do not include a solution."
-                        "**Format the problem description in markdown, following LeetCode's style, including code blocks for code snippets and proper headings.**"
+                        "You are an expert in Apple iOS user interface engineering. "
+                        "Create real-world technical interview problems covering all aspects of user interface, "
+                        "including layout, animations, responsiveness, color contrast, user interaction, gestures, haptics, "
+                        "dynamic type, and anything else user interface related. Use Swift syntax and do not include a solution. Do not provide any hints or notes on what data structure and/or algorithm to use."
+                        "Format the problem description in markdown."
+                        "The problem must include a title, problem statement, examples, constraints, function signature, and the most optimal time and space complexity."
                     )},
                     {"role": "user", "content": prompt}
                 ],
@@ -99,20 +116,6 @@ class ProblemGenerator:
     
     # def clean_text(self, text):
     #     return text.replace('```swift', '').replace('```', '').replace('\\(', '').replace('\\)', '')
-    
-    def save_problem_to_file(self, problem, filename):
-        try:
-            difficulty_dir = os.path.join(PROBLEMS_DIR, self.current_difficulty.lower())
-            if not os.path.exists(difficulty_dir):
-                os.makedirs(difficulty_dir)
-            
-            file_path = os.path.join(difficulty_dir, filename)
-            
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(problem)
-            print(f"Problem saved to file: {file_path}")
-        except Exception as e:
-            print(f"Error saving problem to file: {e}")
     
     def add_problem_to_history(self, problem_entry):
         self.history.append(problem_entry)
@@ -249,6 +252,20 @@ class ProblemGenerator:
             print(f"Filename: {entry['filename']}")
             print(f"Problem:\n{entry['problem']}\n")
     
+    def save_problem_to_file(self, problem, filename):
+        try:
+            difficulty_dir = os.path.join(PROBLEMS_DIR, self.current_difficulty.lower())
+            if not os.path.exists(difficulty_dir):
+                os.makedirs(difficulty_dir)
+
+            file_path = os.path.join(difficulty_dir, filename)
+
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(problem)
+            print(f"Problem saved to file: {file_path}")
+        except Exception as e:
+            print(f"Error saving problem to file: {e}")
+
     def extract_problem_title(self, problem_content):
         lines = problem_content.split('\n')
         for line in lines:

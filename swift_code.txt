@@ -1,46 +1,41 @@
-import Foundation
-
-public func adjustFontSize(_ buttons: [(title: String, fontSize: Float)], _ targetFontSize: Float) -> String? {
-    let dynamicTypeFontSizes: [Float] = [11.0, 13.0, 15.0, 17.0, 20.0, 24.0, 28.0, 34.0, 40.0, 46.0, 52.0]
-    
-    let adjustedTargetFontSize = findClosest(in: dynamicTypeFontSizes, to: targetFontSize)
-    
-    var closestButtonTitle: String? = nil
-    var minDifference = Float.greatestFiniteMagnitude
-    
-    for button in buttons {
-        let diff = abs(button.fontSize - adjustedTargetFontSize)
-        if diff < minDifference {
-            minDifference = diff
-            closestButtonTitle = button.title
-        }
-    }
-    
-    return closestButtonTitle
+struct UIElement {
+    var attribute: String
 }
 
-func findClosest(in array: [Float], to target: Float) -> Float {
-    var left = 0
-    var right = array.count - 1
-    
-    while left <= right {
-        let mid = left + (right - left) / 2
-        if array[mid] == target {
-            return array[mid]
-        } else if array[mid] < target {
-            left = mid + 1
-        } else {
-            right = mid - 1
+func findMatchingUIElements(_ elements: [UIElement], _ targetAttribute: String) -> [(Int, Int)] {
+    guard elements.count > 1 else {
+        return [(-1, -1)]
+    }
+
+    var matchingIndices: [Int] = []
+    var result = [(Int, Int)]()
+
+    for (idx, element) in elements.enumerated() {
+        if element.attribute == targetAttribute {
+            matchingIndices.append(idx)
         }
     }
-    
-    if left == 0 {
-        return array[0]
-    } else if left == array.count {
-        return array[array.count - 1]
-    } else {
-        let before = array[left - 1]
-        let after = array[left]
-        return abs(before - target) <= abs(after - target) ? before : after
+
+    for i in 0..<matchingIndices.count {
+        for j in i + 1..<matchingIndices.count {
+            result.append((matchingIndices[i], matchingIndices[j]))
+        }
     }
+
+    return result
+}
+
+public func printMatchingUIElements() {
+    let elements = [
+        UIElement(attribute: "button"),
+        UIElement(attribute: "label"),
+        UIElement(attribute: "button"),
+        UIElement(attribute: "textfield"),
+        UIElement(attribute: "label")
+    ]
+
+    let targetAttribute = "label"
+    let result = findMatchingUIElements(elements, targetAttribute)  
+
+    print(result)
 }
