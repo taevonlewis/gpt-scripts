@@ -233,7 +233,7 @@ extension ProblemGenerator {
         ]
 
         let body: [String: Any] = [
-            "model": "gpt-4",
+            "model": "gpt-4o",
             "messages": messages,
             "temperature": 0
         ]

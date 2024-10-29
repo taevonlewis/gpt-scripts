@@ -58,7 +58,7 @@ extension ProblemGenerator {
         let userMessage = ["role": "user", "content": prompt]
 
         let body: [String: Any] = [
-            "model": "gpt-4",
+            "model": "gpt-o1-preview",
             "messages": [systemMessage, userMessage],
             "n": 1,
             "temperature": 0.7
