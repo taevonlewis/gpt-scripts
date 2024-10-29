@@ -20,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		CE0D6B232CD094FE009A2C7C /* GPT Scripts */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "GPT Scripts"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE0D6B412CD09FB9009A2C7C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +45,7 @@
 		CE0D6B1A2CD094FE009A2C7C = {
 			isa = PBXGroup;
 			children = (
+				CE0D6B412CD09FB9009A2C7C /* .gitignore */,
 				CE0D6B252CD094FE009A2C7C /* GPT Scripts */,
 				CE0D6B242CD094FE009A2C7C /* Products */,
 			);
